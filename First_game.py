@@ -31,14 +31,30 @@ bird_rectangle = bird.get_rect(center=(100,768/2))
 P = 0.05
 y_bird = 0
 
+game_play = True
 #score
 score = 0
+max_score = 0
 
 game_font = pygame.font.Font(r'FileGame\04B_19.TTF',40)
 def display_score():
-    score_font = game_font.render(str(score),True,(255,255,255))
-    score_rect = score_font.get_rect(center=(200,100))
-    screen.blit(score_font,score_rect)
+    if(game_play):
+        score_font = game_font.render(f"SCORE: {str(score)}",True,(255,255,255))
+        score_rect = score_font.get_rect(center=(432/2,100))
+        screen.blit(score_font,score_rect)
+        
+        # max_score_font = game_font.render(f"HIGH SCORE: {str(max_score)}",True,(255,255,255))
+        # max_score_rect = max_score_font.get_rect(center=(432/2,60))
+        # screen.blit(max_score_font,max_score_rect)
+    else:
+        
+        score_font = game_font.render(f"SCORE: {str(score)}",True,(255,255,255))
+        score_rect = score_font.get_rect(center=(432/2,100))
+        screen.blit(score_font,score_rect)
+        
+        max_score_font = game_font.render(f"HIGH SCORE: {str(max_score)}",True,(255,255,255))
+        max_score_rect = max_score_font.get_rect(center=(432/2,60))
+        screen.blit(max_score_font,max_score_rect)
 
 #func check var
 game_play = True
@@ -50,9 +66,9 @@ def check_var() -> bool:
 #game_over
 game_over = pygame.image.load(r'FileGame\assets\message.png')
 game_over = pygame.transform.scale2x(game_over)
-game_over_rectangle = game_over.get_rect(center=(432/2,600/2))
+game_over_rectangle = game_over.get_rect(center=(432/2,768/2))
 
-
+   
 
 #game loop
 run = True
@@ -61,9 +77,15 @@ while run:
         if(event.type == pygame.QUIT):
             run = False
         if(event.type == pygame.KEYDOWN):
-            if(event.key == pygame.K_SPACE):
+            if(event.key == pygame.K_SPACE and game_play):
                 y_bird = -3 
                 score += 1
+                
+            if(event.key == pygame.K_SPACE and game_play == False):
+                game_play = True
+                y_bird = 0
+                bird_rectangle.center=(100,768/2)
+                score = 0
     
     screen.blit(bg,(0,0))
     
@@ -83,6 +105,8 @@ while run:
         game_play = check_var()
     else:
         screen.blit(game_over,game_over_rectangle)
-        
+        if(score > max_score):
+            max_score = score
+        display_score()
     
     pygame.display.update()
