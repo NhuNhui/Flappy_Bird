@@ -1,6 +1,6 @@
 # add library pygame
 import pygame
-pygame.init
+pygame.init ()
 
 #caption
 pygame.display.set_caption("Plappy Bird")
@@ -28,8 +28,30 @@ bird = pygame.transform.scale2x(bird)
 bird_rectangle = bird.get_rect(center=(100,768/2))
 
 #trọng lực P
-P = 0.1
+P = 0.05
 y_bird = 0
+
+#score
+score = 0
+
+game_font = pygame.font.Font(r'FileGame\04B_19.TTF',40)
+def display_score():
+    score_font = game_font.render(str(score),True,(255,255,255))
+    score_rect = score_font.get_rect(center=(200,100))
+    screen.blit(score_font,score_rect)
+
+#func check var
+game_play = True
+def check_var() -> bool:
+    if(bird_rectangle.bottom >= 768 - 100 or bird_rectangle.top <= 0):
+        return False
+    return True
+
+#game_over
+game_over = pygame.image.load(r'FileGame\assets\message.png')
+game_over = pygame.transform.scale2x(game_over)
+game_over_rectangle = game_over.get_rect(center=(432/2,600/2))
+
 
 
 #game loop
@@ -40,7 +62,8 @@ while run:
             run = False
         if(event.type == pygame.KEYDOWN):
             if(event.key == pygame.K_SPACE):
-                y_bird = -10   
+                y_bird = -3 
+                score += 1
     
     screen.blit(bg,(0,0))
     
@@ -51,9 +74,15 @@ while run:
     if(x_floor <= -432):
         x_floor = 0
         
-    #add bird in game
-    screen.blit(bird,bird_rectangle) 
-    y_bird += P
-    bird_rectangle.centery += y_bird   
+    if game_play:
+        #add bird in game
+        screen.blit(bird,bird_rectangle) 
+        y_bird += P
+        bird_rectangle.centery += y_bird   
+        display_score()
+        game_play = check_var()
+    else:
+        screen.blit(game_over,game_over_rectangle)
         
+    
     pygame.display.update()
